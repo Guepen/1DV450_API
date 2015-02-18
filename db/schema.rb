@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150201190324) do
+ActiveRecord::Schema.define(version: 20150218151220) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -47,6 +47,43 @@ ActiveRecord::Schema.define(version: 20150201190324) do
   create_table "apikeys", force: true do |t|
     t.string   "key"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "coffeehouses", force: true do |t|
+    t.string   "name"
+    t.string   "latitude"
+    t.string   "longitude"
+    t.integer  "creator_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "coffeehouses_tags", id: false, force: true do |t|
+    t.integer "coffeehouse_id"
+    t.integer "tag_id"
+  end
+
+  add_index "coffeehouses_tags", ["coffeehouse_id"], name: "index_coffeehouses_tags_on_coffeehouse_id"
+  add_index "coffeehouses_tags", ["tag_id"], name: "index_coffeehouses_tags_on_tag_id"
+
+  create_table "creators", force: true do |t|
+    t.string   "firstName"
+    t.string   "lastName"
+    t.string   "username"
+    t.string   "password_digest"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "errors", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tags", force: true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

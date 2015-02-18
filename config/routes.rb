@@ -18,6 +18,16 @@ Rails.application.routes.draw do
 
    resources :users, only: [:new, :create, :show]
 
+  namespace :api, defaults: {format: :json}do
+    namespace :v1 do
+      resources :coffeehouses, only: [:index, :show, :create, :update, :destroy] do
+        resources :tags, only: [:index, :create, :update, :destroy]
+      end
+      # resources :tags, only: [:index, :show, :create, :update, :destroy]
+      get 'tags/:id/coffeehouses' => 'tags#coffeehouses'
+    end
+  end
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
