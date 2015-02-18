@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <h1>Registrera dig</h1>
+  </div>
+</div>
+<div class="row">
+  <p></p><p></p>
+  <div class="col-md-6 col-md-offset-3">
+    <%= render 'shared/error_messages' %>
+    <%= form_for @user, :url => users_path do |f| %>
+        <%= f.label :username, 'Användarnamn' %>
+        <%= f.text_field :username, class: 'form-control' %>
+
+        <%= f.label :email %>
+        <%= f.email_field :email, class: 'form-control' %>
+
+        <%= f.label :password, 'Lösenord' %>
+        <%= f.password_field :password, class: 'form-control' %>
+
+        <%= f.label :password_confirmation, 'Bekräfta Lösenord' %>
+        <%= f.password_field :password_confirmation, class: 'form-control' %>
+        <p></p>
+
+        <%= f.submit 'Skapa konto', class: 'btn btn-success' %>
+        <%= link_to 'Tillbaka', root_path, class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>

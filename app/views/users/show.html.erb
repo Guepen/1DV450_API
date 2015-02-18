@@ -1,0 +1,57 @@
+<% content_for :title, 'API - Inloggad' %>
+<%= content_for :screen_name, 'Inloggad som ' + @user.username %>
+<div class="row">
+  <div class="page-header">
+    <h1>Något API</h1>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 grey">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <h3>Din API-nyckel</h3>
+          </div>
+          <div class="panel-body">
+            <p><strong>Din nyckel är: </strong> <%= @key %></p>
+            <p>För att kunna anropa API:et behöver du skicka med din nyckel vid varje anrop!</p>
+            <p>Läs mer om detta i <a class="btn btn-primary" href="#" target="_blank">dokumentationen</a></p>
+          </div>
+          <div class="panel-footer">
+            <% if @key %>
+            <%= link_to 'Avregistrera din API-nyckel', apikeys_destroy_path(@user.id), :class => 'btn btn-danger' %>
+            <% else %>
+              <%= link_to 'Registrera API-nyckel', apikeys_generate_path(@user.id), :class => 'btn btn-success' %>
+              <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5 col-md-offset-1">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3>Varför behöver du en API-nyckel?</h3>
+          </div>
+          <div class="panel-body">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed a magna erat. Proin vehicula iaculis auctor.
+              Nunc porttitor euismod tempor. Curabitur dictum nulla sit amet metus aliquam, vel ornare mi hendrerit.
+              Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla a felis
+              vel odio facilisis semper eget in nulla. In non maximus libero, et vestibulum ligula. Integer fringilla
+              porttitor auctor. Ut vulputate enim at nibh placerat pellentesque. Curabitur varius leo nec nisl ornare
+              interdum. Nullam sed ultricies turpis.</p>
+
+            <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;
+              Cras venenatis dolor sed libero consectetur semper. In pharetra nulla in pretium dictum.
+              Praesent consequat auctor lorem et lacinia. Vivamus dapibus nibh non neque tristique,
+              non tristique diam molestie. </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

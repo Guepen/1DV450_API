@@ -1,0 +1,27 @@
+<% content_for :title do %>
+    Logga in
+<% end %>
+<div class="row">
+<div class="jumbotron">
+  <h1>Välkommen till något API </h1>
+  <h3>Var vänlig logga in</h3>
+  <div class="row">
+    <div class="col-md-12">
+      <%= render 'shared/flash_messages' %>
+      <%= form_for(:session, url: login_path) do |f| %>
+
+          <%= f.label :username, 'Användarnamn' %>
+          <%= f.text_field :username, class: 'form-control' %>
+
+          <%= f.label :password %>
+          <%= f.password_field :password, class: 'form-control' %>
+          <br />
+          <%= f.submit 'Logga In', class: 'btn btn-success' %>
+          <%= link_to 'Registrera dig',  new_user_path,  class: 'btn btn-primary' %>
+      <% end %>
+
+    </div>
+  </div>
+
+</div>
+</div>
