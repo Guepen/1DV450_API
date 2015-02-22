@@ -1,12 +1,10 @@
 class Api::V1::CreatorsController < ApplicationController
+  include ApplicationHelper
+  before_action :authenticate_developer
 
   def index
-
-
     creators = Creator.all
-
     render json: creators, status: :ok
-
   end
 
   def create

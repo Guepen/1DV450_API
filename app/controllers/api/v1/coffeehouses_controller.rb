@@ -1,5 +1,8 @@
 class Api::V1::CoffeehousesController < ApplicationController
+  include ApplicationHelper
+  before_action :authenticate_developer
   before_action :set_coffeehouse, only: [:show, :update, :destroy]
+
 
   def index
     if params[:creator_id].present?

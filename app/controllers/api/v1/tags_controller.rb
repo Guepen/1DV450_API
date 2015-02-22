@@ -1,4 +1,6 @@
 class Api::V1::TagsController < ApplicationController
+  include ApplicationHelper
+  before_action :authenticate_developer
   before_action :set_tag, only: [:show, :destroy]
 
   def index
