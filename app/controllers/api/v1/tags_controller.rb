@@ -43,7 +43,7 @@ class Api::V1::TagsController < ApplicationController
 
       # if the coffeehouse is not found
   rescue ActiveRecord::RecordNotFound
-    error = ErrorMessage.new
+    error = Error.new
     # tell the user what went wrong and give statuscode 404
     render json: error.resource_not_found("coffeehouses/#{params[:id]}"), status: :not_found
   end
@@ -51,7 +51,7 @@ class Api::V1::TagsController < ApplicationController
   def set_tag
     @tag = Tag.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    error = ErrorMessage.new
+    error = Error.new
     # tell the user what went wrong and give statuscode 404
     render json: error.resource_not_found("tags/#{params[:id]}"), status: :not_found
   end

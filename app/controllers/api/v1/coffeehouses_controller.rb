@@ -2,9 +2,16 @@ class Api::V1::CoffeehousesController < ApplicationController
   before_action :set_coffeehouse, only: [:show, :update, :destroy]
 
   def index
-    coffeehouses = Coffeehouse.all
-    #TODO: add pagination? filtering? orderBy?
-    render json: coffeehouses
+    if params[:creator_id].present?
+      set_creator
+      render json: @creator.coffeehouses, status: :ok
+    else
+
+      coffeehouses = Coffeehouse.all
+      #TODO: add pagination? filtering? orderBy?
+      render json: coffeehouses
+    end
+
   end
 
   def show
@@ -41,9 +48,18 @@ class Api::V1::CoffeehousesController < ApplicationController
 
       # if the coffeehouse is not found
   rescue ActiveRecord::RecordNotFound
-    error = ErrorMessage.new
+    error = Error.new
     # tell the user what went wrong and give statuscode 404
     render json: error.resource_not_found("coffeehouses/#{params[:id]}"), status: :not_found
+  end
+
+  def set_creator
+    @creator = Creator.find(params[:creator_id])
+
+  rescue ActiveRecord::RecordNotFound
+    error = Error.new
+    # tell the user what went wrong and give statuscode 404
+    render json: error.resource_not_found("creators/#{params[:creator_id]}/coffeehouses"), status: :not_found
   end
 
   def coffeehouse_params
