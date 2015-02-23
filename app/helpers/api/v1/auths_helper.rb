@@ -1,16 +1,5 @@
 module Api::V1::AuthsHelper
 
-  def authenticate_developer
-    authenticate_or_request_with_http_token do |token|
-      Apikey.exists?(key: token)
-    end
-  end
-
-  def authenticate_creator
-
-  end
-
-
   def encode_jwt(creator, exp=2.hours.from_now)
     # add the expire to the payload, as an integer
     payload = { creator_id: creator.id }

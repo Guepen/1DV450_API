@@ -5,6 +5,8 @@ class Coffeehouse < ActiveRecord::Base
 
   accepts_nested_attributes_for :tags
 
+  reverse_geocoded_by :latitude, :longitude
+
   #TODO: validate
 
   def serializable_hash (options={})

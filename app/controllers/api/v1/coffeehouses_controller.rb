@@ -1,6 +1,6 @@
 class Api::V1::CoffeehousesController < ApplicationController
   #before_action :authenticate_developer
-  before_action :authenticate_creator
+  #before_action :authenticate_creator
   before_action :pagination
   before_action :set_coffeehouse, only: [:show, :update, :destroy]
 
@@ -20,7 +20,7 @@ class Api::V1::CoffeehousesController < ApplicationController
 
   def coffeehouses
     if params[:order].present?
-      coffeehouses = Coffeehouse.limit(@limit).offset(@offset).order("updated_at #{params[:order]}")
+      coffeehouses = Coffeehouse.near(params[:location], params[:range]).limit(@limit).offset(@offset).order("updated_at #{params[:order]}")
       render json: coffeehouses, status: :ok
     else
       coffeehouses = Coffeehouse.limit(@limit).offset(@offset)

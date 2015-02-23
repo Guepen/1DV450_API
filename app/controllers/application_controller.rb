@@ -5,7 +5,11 @@ class ApplicationController < ActionController::Base
 
   include Api::V1::AuthsHelper
 
-# This method is for encoding the JWT before sending it out
+  def authenticate_developer
+    authenticate_or_request_with_http_token do |token|
+      Apikey.exists?(key: token)
+    end
+  end
 
   def authenticate_creator
     if request.headers['jwt'].present?

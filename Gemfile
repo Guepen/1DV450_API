@@ -36,6 +36,8 @@ gem 'activeadmin', github: 'gregbell/active_admin'
 
 gem 'jwt'
 
+gem 'geocoder'
+
 
 # Use unicorn as the app server
 # gem 'unicorn'
