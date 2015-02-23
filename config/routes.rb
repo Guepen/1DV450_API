@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
    get '/users' => redirect('/users/new')
    get  '/login'   => 'sessions#new'
+
    post '/login'   => 'sessions#create'
 
    get '/logout' => 'sessions#destroy'
@@ -20,13 +21,14 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: {format: :json}do
     namespace :v1 do
-      resources :coffeehouses, only: [:index, :show, :create, :update, :destroy] do
+      get '/authenticate' => 'auths#authenticate'
+      resources :coffeehouses, only: [:index, :show] do
         resources :tags, only: [:index, :create, :update, :destroy]
       end
       resources :tags, only: [:index]
       get 'tags/:id/coffeehouses' => 'tags#coffeehouses'
       resources :creators, only: [:index, :create, :update, :destroy] do
-        resources :coffeehouses, only: [:index]
+        resources :coffeehouses, only: [:index, :create, :update, :destroy]
       end
     end
   end

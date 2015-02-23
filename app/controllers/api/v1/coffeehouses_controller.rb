@@ -1,6 +1,6 @@
 class Api::V1::CoffeehousesController < ApplicationController
- # before_action :authenticate_developer
-  #before_action :authenticate_creator
+  #before_action :authenticate_developer
+  before_action :authenticate_creator
   before_action :pagination
   before_action :set_coffeehouse, only: [:show, :update, :destroy]
 
@@ -19,28 +19,49 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def coffeehouses
-    coffeehouses = Coffeehouse.limit(@limit).offset(@offset)
-    #TODO: add filtering? orderBy?
-    render json: coffeehouses, status: :ok
+    if params[:order].present?
+      coffeehouses = Coffeehouse.limit(@limit).offset(@offset).order("updated_at #{params[:order]}")
+      render json: coffeehouses, status: :ok
+    else
+      coffeehouses = Coffeehouse.limit(@limit).offset(@offset)
+      render json: coffeehouses, status: :ok
+    end
   end
 
   def match_creators_coffeehouses
     set_creator
-    coffeehouses = @creator.coffeehouses.where('name like ?', "%#{params[:search]}%")
+    if params[:order].present?
+      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%").
+          order("updated_at #{params[:order]}")
+      render json: coffeehouses, status: :ok
+    else
+      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%").
+          order("updated_at #{params[:order]}")
+      render json: coffeehouses, status: :ok
+    end
 
     render json: coffeehouses, status: :ok
   end
 
   def match_coffeehouses
+    if params[:order].present?
+      coffeehouses = Coffeehouse.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%")
+      render json: coffeehouses, status: :ok
+    else
+
+    end
 
 
-    coffeehouses = Coffeehouse.where('name like ?', "%#{params[:search]}%")
-    render json: coffeehouses, status: :ok
 
   end
 
   def creators_coffeehouses
     set_creator
+    if params[:order].present?
+      render json: @creator.coffeehouses.limit(@limit).offset(@offset), status: :ok
+    else
+
+    end
     render json: @creator.coffeehouses.limit(@limit).offset(@offset), status: :ok
   end
 
@@ -49,11 +70,8 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def create
-    if params[:tag_name].present?
-      tag = Tag.new(tag_params)
-      tag.save
-    end
     coffeehouse = Coffeehouse.new(coffeehouse_params)
+    coffeehouse.creator_id = @creator_id
     if coffeehouse.save
       render json: coffeehouse, status: :created
     else
@@ -97,11 +115,11 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def coffeehouse_params
-    params.require(:coffeehouse).permit(:creator_id, :name, :latitude, :longitude)
+    params.require(:coffeehouse).permit(:creator_id, :name, :latitude, :longitude, tags_attributes: [:name] )
   end
 
-  def tag_params
-    params.require(:tag).permit(:name)
+  def creator_id
+
   end
 
 end

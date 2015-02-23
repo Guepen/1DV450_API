@@ -34,6 +34,9 @@ gem 'custom_error_message', '~> 1.1.1'
 gem 'devise'
 gem 'activeadmin', github: 'gregbell/active_admin'
 
+gem 'jwt'
+
+
 # Use unicorn as the app server
 # gem 'unicorn'
 

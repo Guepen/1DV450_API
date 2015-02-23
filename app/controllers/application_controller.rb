@@ -3,19 +3,22 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   #protect_from_forgery with: :exception
 
-  def authenticate_developer
-    authenticate_or_request_with_http_token do |token|
-      Apikey.exists?(key: token)
-    end
-  end
+  include Api::V1::AuthsHelper
+
+# This method is for encoding the JWT before sending it out
 
   def authenticate_creator
-    authenticate_with_http_basic do |username, password|
-      c = Creator.find_by_username(username)
-
-      c.authenticate(password) if c
+    if request.headers['jwt'].present?
+      auth_header = request.headers['jwt'].split(' ').last
+      @token_payload = decode_jwt auth_header.strip
+      @creator_id = @token_payload[0]['creator_id']
+      #render json: @token_payload[0]['creator_id']
+      if !@token_payload
+        render json: { error: 'The provided token wasn´t correct' }, status: :bad_request
+      end
+    else
+      render json: { error: 'Need to include the Authorization header' }, status: :forbidden # The header isn´t present
     end
-
   end
 
   def pagination
