@@ -1,20 +1,47 @@
 class Api::V1::CoffeehousesController < ApplicationController
-  include ApplicationHelper
-  before_action :authenticate_developer
+ # before_action :authenticate_developer
+  #before_action :authenticate_creator
+  before_action :pagination
   before_action :set_coffeehouse, only: [:show, :update, :destroy]
 
 
   def index
-    if params[:creator_id].present?
-      set_creator
-      render json: @creator.coffeehouses, status: :ok
+    if params[:creator_id].present? && params[:search].present?
+      match_creators_coffeehouses
+    elsif params[:creator_id].present?
+      creators_coffeehouses
+    elsif params[:search].present?
+      match_coffeehouses
     else
-
-      coffeehouses = Coffeehouse.all
-      #TODO: add pagination? filtering? orderBy?
-      render json: coffeehouses
+      coffeehouses
     end
 
+  end
+
+  def coffeehouses
+    coffeehouses = Coffeehouse.limit(@limit).offset(@offset)
+    #TODO: add filtering? orderBy?
+    render json: coffeehouses, status: :ok
+  end
+
+  def match_creators_coffeehouses
+    set_creator
+    coffeehouses = @creator.coffeehouses.where('name like ?', "%#{params[:search]}%")
+
+    render json: coffeehouses, status: :ok
+  end
+
+  def match_coffeehouses
+
+
+    coffeehouses = Coffeehouse.where('name like ?', "%#{params[:search]}%")
+    render json: coffeehouses, status: :ok
+
+  end
+
+  def creators_coffeehouses
+    set_creator
+    render json: @creator.coffeehouses.limit(@limit).offset(@offset), status: :ok
   end
 
   def show
@@ -22,6 +49,10 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def create
+    if params[:tag_name].present?
+      tag = Tag.new(tag_params)
+      tag.save
+    end
     coffeehouse = Coffeehouse.new(coffeehouse_params)
     if coffeehouse.save
       render json: coffeehouse, status: :created
@@ -66,6 +97,11 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def coffeehouse_params
-    params.require(:coffeehouse).permit(:creator_id, :name, :lat, :long)
+    params.require(:coffeehouse).permit(:creator_id, :name, :latitude, :longitude)
   end
+
+  def tag_params
+    params.require(:tag).permit(:name)
+  end
+
 end

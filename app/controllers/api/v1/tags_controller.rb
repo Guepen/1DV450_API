@@ -1,14 +1,14 @@
 class Api::V1::TagsController < ApplicationController
-  include ApplicationHelper
-  before_action :authenticate_developer
+ # before_action :authenticate_developer
+  before_action :pagination
   before_action :set_tag, only: [:show, :destroy]
 
   def index
     if coffeehouse_is_present?
       set_coffeehouse
-      render json: @coffeehouse.tags
+      render json: @coffeehouse.tags.limit(@limit).offset(@offset)
     else
-      render json: Tag.all
+      render json: Tag.all.limit(@limit).offset(@offset)
     end
   end
 

@@ -1,9 +1,8 @@
 class Api::V1::CreatorsController < ApplicationController
-  include ApplicationHelper
-  before_action :authenticate_developer
+  #before_action :authenticate_developer
 
   def index
-    creators = Creator.all
+    creators = Creator.limit(@limit).offset(@offset)
     render json: creators, status: :ok
   end
 
