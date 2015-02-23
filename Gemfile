@@ -36,6 +36,8 @@ gem 'activeadmin', github: 'gregbell/active_admin'
 
 gem 'jwt'
 
+gem 'rack-cors', :require => 'rack/cors'
+
 gem 'geocoder'
 
 
