@@ -1,4 +1,5 @@
 class Api::V1::AuthsController < ApplicationController
+  #before_action :authenticate_developer
 
   def authenticate
     c = Creator.find_by_username(request.headers['username'])

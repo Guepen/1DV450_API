@@ -7,7 +7,13 @@ class Creator < ActiveRecord::Base
     options = {
         only: [:firstName, :lastName, :username]
     }.update(options)
-    super(options)
+    json = super(options)
+    json['url'] = self_url
+    json
+  end
+
+  def self_url
+    "#{Rails.configuration.baseurl}#{api_v1_creator_path(self)}"
   end
 
 end

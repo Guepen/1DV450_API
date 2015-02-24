@@ -18,55 +18,8 @@ class Api::V1::CoffeehousesController < ApplicationController
 
   end
 
-  def coffeehouses
-    if params[:order].present?
-      coffeehouses = Coffeehouse.near(params[:location], params[:range]).limit(@limit).offset(@offset).order("updated_at #{params[:order]}")
-      render json: coffeehouses, status: :ok
-    else
-      coffeehouses = Coffeehouse.limit(@limit).offset(@offset)
-      render json: coffeehouses, status: :ok
-    end
-  end
-
-  def match_creators_coffeehouses
-    set_creator
-    if params[:order].present?
-      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%").
-          order("updated_at #{params[:order]}")
-      render json: coffeehouses, status: :ok
-    else
-      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%").
-          order("updated_at #{params[:order]}")
-      render json: coffeehouses, status: :ok
-    end
-
-    render json: coffeehouses, status: :ok
-  end
-
-  def match_coffeehouses
-    if params[:order].present?
-      coffeehouses = Coffeehouse.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%")
-      render json: coffeehouses, status: :ok
-    else
-
-    end
-
-
-
-  end
-
-  def creators_coffeehouses
-    set_creator
-    if params[:order].present?
-      render json: @creator.coffeehouses.limit(@limit).offset(@offset), status: :ok
-    else
-
-    end
-    render json: @creator.coffeehouses.limit(@limit).offset(@offset), status: :ok
-  end
-
   def show
-    render json: @coffeehouse
+    render json: @coffeehouse, status: :ok, location: api_v1_coffeehouse_path(@coffeehouse)
   end
 
   def create
@@ -94,6 +47,56 @@ class Api::V1::CoffeehousesController < ApplicationController
 
   # Private methods
   private
+  # TODO: check if geoparams i present
+  #.near(params[:location], params[:range])
+  def coffeehouses
+    if params[:order].present? && params[:location].present? && params[:range].present?
+      coffeehouses
+    elsif params[:order].present?
+      coffeehouses = Coffeehouse.page(1).per(@limit).padding(@offset).
+          order("updated_at #{params[:order]}")
+      render json: coffeehouses, status: :ok
+    else
+      coffeehouses = Coffeehouse.page(1).per(@limit).padding(@offset)
+      render json: coffeehouses, status: :ok
+    end
+  end
+
+  def match_creators_coffeehouses
+    set_creator
+    if params[:order].present? && params[]
+      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%").
+          order("updated_at #{params[:order]}")
+      render json: coffeehouses, status: :ok
+    else
+      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%").
+          order("updated_at #{params[:order]}")
+      render json: coffeehouses, status: :ok
+    end
+
+    render json: coffeehouses, status: :ok
+  end
+
+  def match_coffeehouses
+    if params[:order].present?
+      coffeehouses = Coffeehouse.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%")
+      render json: coffeehouses, status: :ok
+    else
+
+    end
+
+  end
+
+  def creators_coffeehouses
+    set_creator
+    if params[:order].present?
+      render json: @creator.coffeehouses.limit(@limit).offset(@offset), status: :ok
+    else
+
+    end
+    render json: @creator.coffeehouses.limit(@limit).offset(@offset), status: :ok
+  end
+
 
   def set_coffeehouse
     @coffeehouse = Coffeehouse.find(params[:id])
@@ -101,8 +104,10 @@ class Api::V1::CoffeehousesController < ApplicationController
       # if the coffeehouse is not found
   rescue ActiveRecord::RecordNotFound
     error = Error.new
-    # tell the user what went wrong and give statuscode 404
+     #tell the user what went wrong and give statuscode 404
     render json: error.resource_not_found("coffeehouses/#{params[:id]}"), status: :not_found
+
+
   end
 
   def set_creator
@@ -118,8 +123,7 @@ class Api::V1::CoffeehousesController < ApplicationController
     params.require(:coffeehouse).permit(:creator_id, :name, :latitude, :longitude, tags_attributes: [:name] )
   end
 
-  def creator_id
 
-  end
+
 
 end

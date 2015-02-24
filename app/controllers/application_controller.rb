@@ -12,16 +12,17 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_creator
-    if request.headers['jwt'].present?
-      auth_header = request.headers['jwt'].split(' ').last
+    if request.headers['token'].present?
+      auth_header = request.headers['token'].split(' ').last
       @token_payload = decode_jwt auth_header.strip
-      @creator_id = @token_payload[0]['creator_id']
-      #render json: @token_payload[0]['creator_id']
-      if !@token_payload
-        render json: { error: 'The provided token wasn´t correct' }, status: :bad_request
+
+      if @token_payload
+        @creator_id = @token_payload[0]['creator_id']
+      else
+        render json: { error: 'The provided login_token wasn´t correct' }, status: :bad_request
       end
     else
-      render json: { error: 'Need to include the Authorization header' }, status: :forbidden # The header isn´t present
+      render json: { error: 'Need to include the login_token header' }, status: :forbidden # The header isn´t present
     end
   end
 

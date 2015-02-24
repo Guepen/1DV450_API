@@ -32,7 +32,7 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
-  config.baseurl = "127.0.0.0:3000"
+  config.baseurl = "127.0.0.1:3000"
 
 
   # Raises error for missing translations
