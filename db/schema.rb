@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150218151220) do
+ActiveRecord::Schema.define(version: 20150225085342) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -53,11 +53,12 @@ ActiveRecord::Schema.define(version: 20150218151220) do
 
   create_table "coffeehouses", force: true do |t|
     t.string   "name"
-    t.string   "latitude"
-    t.string   "longitude"
+    t.float    "latitude",   limit: 255
+    t.float    "longitude",  limit: 255
     t.integer  "creator_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "address"
   end
 
   create_table "coffeehouses_tags", id: false, force: true do |t|

@@ -22,13 +22,13 @@ Rails.application.routes.draw do
   namespace :api, defaults: {format: :json}do
     namespace :v1 do
       get '/authenticate' => 'auths#authenticate'
-      resources :coffeehouses, only: [:index, :show, :update, :destroy] do
+      resources :coffeehouses, only: [:index, :show, :create, :update, :destroy] do
         resources :tags, only: [:index, :create, :update, :destroy]
       end
       resources :tags, only: [:index, :show]
       get 'tags/:id/coffeehouses' => 'tags#coffeehouses'
       resources :creators, only: [:index, :show, :create, :update, :destroy] do
-        resources :coffeehouses, only: [:index, :create, :update, :destroy]
+        resources :coffeehouses, only: [:index]
       end
     end
   end
