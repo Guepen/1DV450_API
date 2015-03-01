@@ -1,5 +1,5 @@
 class Api::V1::CoffeehousesController < ApplicationController
-  #before_action :authenticate_developer
+  before_action :authenticate_developer
   before_action :authenticate_creator, only: [:create, :update, :destroy]
   before_action :pagination
   before_action :set_coffeehouse, only: [:show, :update, :destroy]

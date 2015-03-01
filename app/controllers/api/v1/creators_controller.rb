@@ -1,6 +1,5 @@
 class Api::V1::CreatorsController < ApplicationController
-  #before_action :authenticate_developer
-  #before_action :authenticate_creator, only: [:create]
+  before_action :authenticate_developer
 
   def index
     creators = Creator.limit(@limit).offset(@offset)

@@ -1,6 +1,6 @@
 class Api::V1::TagsController < ApplicationController
- # before_action :authenticate_developer
-  #before_action :authenticate_creator, only: [:create, :destroy]
+  before_action :authenticate_developer
+  before_action :authenticate_creator, only: [:create, :destroy]
   before_action :pagination
   before_action :set_tag, only: [:show, :destroy]
 
