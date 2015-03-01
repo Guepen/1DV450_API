@@ -3,21 +3,17 @@ class Coffeehouse < ActiveRecord::Base
   belongs_to :creator
   has_and_belongs_to_many :tags, dependent: :destroy
 
-  validates_presence_of :name, :latitude, :longitude
-  validates_numericality_of :latitude, :longitude
-  validates_length_of :name, minimum: 1, maximum: 50
-  validates_associated :creator
+  validates_presence_of :name, :street, :zipcode, :city
+  #validates_length_of :name, minimum: 1, maximum: 50
 
   accepts_nested_attributes_for :tags
 
-  reverse_geocoded_by :latitude, :longitude
-  after_validation :reverse_geocode  # auto-fetch address
-
-  #TODO: validate
+  geocoded_by :get_address
+  after_validation :geocode # auto-fetch coordinates
 
   def serializable_hash (options={})
     options = {
-        only: [:name, :address, :location],
+        only: [:name, :latitude, :longitude, :street, :zipcode, :city],
         include: {creator: {only: [:firstName, :lastName, :username]}, tags: {only: [:name]}},
     }.update(options)
     json = super(options)
@@ -31,9 +27,6 @@ class Coffeehouse < ActiveRecord::Base
   end
 
   private
-  def remove_tags
-    ActionController::Base.helpers.strip_tags(self.name)
-  end
 
   def self_url
     "#{Rails.configuration.baseurl}#{api_v1_coffeehouse_path(self)}"
@@ -47,5 +40,8 @@ class Coffeehouse < ActiveRecord::Base
     "#{Rails.configuration.baseurl}#{api_v1_tag_path(tag)}"
   end
 
+  def get_address
+    [street, city, zipcode, 'Sweden'].compact.join(', ')
+  end
 
 end

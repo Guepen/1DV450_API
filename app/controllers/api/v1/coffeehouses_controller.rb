@@ -1,5 +1,5 @@
 class Api::V1::CoffeehousesController < ApplicationController
-  before_action :authenticate_developer
+  #before_action :authenticate_developer
   before_action :authenticate_creator, only: [:create, :update, :destroy]
   before_action :pagination
   before_action :set_coffeehouse, only: [:show, :update, :destroy]
@@ -49,6 +49,7 @@ class Api::V1::CoffeehousesController < ApplicationController
   private
 
   def all_coffeehouses
+    #Check params
     if params[:latitude].present? && params[:longitude].present? && params[:order].present?
       set_range
       coffeehouses = Coffeehouse.near([params[:latitude].to_f, params[:longitude].to_f], @range, unit: :km).
@@ -70,13 +71,16 @@ class Api::V1::CoffeehousesController < ApplicationController
 
   def match_creators_coffeehouses
     set_creator
-    if params[:location].present? && params[:range].present? && params[:order].present?
-      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).near(params[:location], params[:range], unit: :km).
+    if params[:latitude].present? && params[:longitude].present? && params[:order].present?
+      set_range
+      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).near([params[:latitude].to_f, params[:longitude].to_f],
+                                                                              @range, unit: :km).
           where('name like ?', "%#{params[:search]}%").order("updated_at #{params[:order]}")
       render json: coffeehouses, status: :ok
-    elsif params[:location].present? && params[:range].present?
-      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).near(params[:location], params[:range], unit: :km).
-          where('name like ?', "%#{params[:search]}%")
+    elsif params[:latitude].present? && params[:longitude].present?
+      set_range
+      coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).near([params[:latitude].to_f, params[:longitude].to_f],
+                                                                              unit: :km).where('name like ?', "%#{params[:search]}%")
       render json: coffeehouses, status: :ok
     elsif params[:order].present?
       coffeehouses = @creator.coffeehouses.limit(@limit).offset(@offset).where('name like ?', "%#{params[:search]}%").
@@ -87,8 +91,6 @@ class Api::V1::CoffeehousesController < ApplicationController
           order("updated_at #{params[:order]}")
       render json: coffeehouses, status: :ok
     end
-
-    render json: coffeehouses, status: :ok
   end
 
   def match_coffeehouses
@@ -143,7 +145,7 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def coffeehouse_params
-    params.require(:coffeehouse).permit(:creator_id, :name, :latitude, :longitude, tags_attributes: [:name] )
+    params.permit(:name, :street, :zipcode, :city, tags_attributes: [:name] )
   end
 
 end

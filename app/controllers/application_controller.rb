@@ -12,8 +12,8 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_creator
-    if request.headers['token'].present?
-      auth_header = request.headers['token'].split(' ').last
+    if request.headers['authtoken'].present?
+      auth_header = request.headers['authtoken'].split(' ').last
       @token_payload = decode_jwt auth_header.strip
 
       if @token_payload
