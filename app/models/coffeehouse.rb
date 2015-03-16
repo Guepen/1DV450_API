@@ -3,18 +3,20 @@ class Coffeehouse < ActiveRecord::Base
   belongs_to :creator
   has_and_belongs_to_many :tags, dependent: :destroy
 
+
+
   validates_presence_of :name, :street, :zipcode, :city
   #validates_length_of :name, minimum: 1, maximum: 50
 
-  accepts_nested_attributes_for :tags
+  accepts_nested_attributes_for :tags, :reject_if => :exists
 
   geocoded_by :get_address
   after_validation :geocode # auto-fetch coordinates
 
   def serializable_hash (options={})
     options = {
-        only: [:name, :latitude, :longitude, :street, :zipcode, :city],
-        include: {creator: {only: [:firstName, :lastName, :username]}, tags: {only: [:name]}},
+        only: [:id, :name, :latitude, :longitude, :street, :zipcode, :city],
+        include: {creator: {only: [:firstName, :lastName, :username]}, tags: {only: [:id, :name]}},
     }.update(options)
     json = super(options)
     json['url'] = self_url
@@ -27,6 +29,15 @@ class Coffeehouse < ActiveRecord::Base
   end
 
   private
+
+  def exists(tags_attributes)
+    if Tag.find_by_name(tags_attributes['name'])
+      self.tags << Tag.find_by_name(tags_attributes['name'])
+      true
+    else
+      false
+    end
+  end
 
   def self_url
     "#{Rails.configuration.baseurl}#{api_v1_coffeehouse_path(self)}"
