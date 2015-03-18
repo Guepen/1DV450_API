@@ -34,7 +34,10 @@ class Api::V1::CoffeehousesController < ApplicationController
 
   def update
     @coffeehouse.tags.delete_all
-    if @coffeehouse.update(coffeehouse_params)
+    creator_id = @coffeehouse.creator_id
+    if @creator_id != creator_id
+      head :unauthorized
+    elsif @coffeehouse.update(coffeehouse_params)
       head :no_content
     else
       render json: @coffeehouse.errors, status: :unprocessable_entity
@@ -42,8 +45,14 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def destroy
-    @coffeehouse.destroy
-    head :no_content
+    creator_id = @coffeehouse.creator_id
+    if @creator_id != creator_id
+      head :unauthorized
+    else
+      @coffeehouse.destroy
+      head :no_content
+    end
+
   end
 
   # Private methods
