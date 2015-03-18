@@ -18,14 +18,18 @@ class Api::V1::TagsController < ApplicationController
   end
 
   def create
-    tag = Tag.new(tag_params)
+    tag = Tag.find_by_name(tag_params['name'])
     coffeehouse = Coffeehouse.find(params[:coffeehouse_id])
-    if tag.save
-      coffeehouse.tags << tag
-      render json: tag, status: :created
-    else
-      render json: tag.errors, status: :unprocessable_entity
+    if tag.nil?
+      tag = Tag.new(tag_params)
+      if tag.save
+        render json: tag, status: :created
+      else
+        render json: tag.errors, status: :unprocessable_entity
+      end
     end
+    coffeehouse.tags << tag
+    render json: tag, status: :created
   end
 
 
