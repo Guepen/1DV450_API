@@ -33,6 +33,7 @@ class Api::V1::CoffeehousesController < ApplicationController
   end
 
   def update
+    @coffeehouse.tags.delete_all
     if @coffeehouse.update(coffeehouse_params)
       head :no_content
     else
