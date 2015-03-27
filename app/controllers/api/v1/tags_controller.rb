@@ -23,13 +23,16 @@ class Api::V1::TagsController < ApplicationController
     if tag.nil?
       tag = Tag.new(tag_params)
       if tag.save
-        render json: tag, status: :created
+        coffeehouse.tags << tag
+        render json: Tag.last, status: :created
       else
         render json: tag.errors, status: :unprocessable_entity
       end
+    else
+      coffeehouse.tags << tag
+      render json: tag, status: :created
     end
-    coffeehouse.tags << tag
-    render json: tag, status: :created
+
   end
 
 

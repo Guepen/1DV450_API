@@ -7,7 +7,7 @@ class Tag < ActiveRecord::Base
   validates_associated :coffeehouses
   def serializable_hash (options={})
     options = {
-        only: [:name]
+        only: [:id,:name]
     }.update(options)
     json = super(options)
     json['url'] = self_url
